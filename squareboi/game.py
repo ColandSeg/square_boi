@@ -1,31 +1,38 @@
-import pygame
+import pygame as pyg
+from player import Player
 
 class Game:
     def __init__(self):
-        pygame.init()
-        pygame.display.set_caption("Square Boi")
-        self._screen = pygame.display.set_mode((1000, 500))
-        self._clock = pygame.time.Clock()
+        pyg.init()
+        pyg.display.set_caption("Square Boi")
+        self.screen = pyg.display.set_mode((960, 480))
+        self.clock = pyg.time.Clock()
+
+        self.player = Player()
 
     def run_game(self):
         # Game loop
         while True:
-            self._get_input()
-            self._do_logic()
-            self._do_output()
+            self.get_input()
+            self.do_logic()
+            self.do_output()
 
-    def _get_input(self):
+    def get_input(self):
         # Event loop
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
+        for event in pyg.event.get():
+            # Alt+F4
+            if event.type == pyg.QUIT:
+                pyg.quit()
                 quit()
+        
+        self.player.move()
 
-    def _do_logic(self):
-        pass
+    def do_logic(self):
+        self.player.stay_on_screen()
 
-    def _do_output(self):
-        self._screen.fill("#111111")
+    def do_output(self):
+        self.screen.fill("#111111")
+        self.screen.blit(self.player.surface, self.player.rect)
 
-        pygame.display.flip()
-        self._clock.tick(60)
+        pyg.display.flip()
+        self.clock.tick(60)
