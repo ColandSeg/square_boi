@@ -4,7 +4,7 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Square Boi")
-        self._screen = pygame.display.set_mode((800, 600))
+        self._screen = pygame.display.set_mode((1000, 500))
         self._clock = pygame.time.Clock()
 
     def run_game(self):
