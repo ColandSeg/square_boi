@@ -10,11 +10,12 @@ class Game:
     def run_game(self):
         # Game loop
         while True:
-            self._get_inputs()
+            self._get_input()
             self._do_logic()
-            self._do_outputs()
+            self._do_output()
 
-    def _get_inputs(self):
+    def _get_input(self):
+        # Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -23,7 +24,8 @@ class Game:
     def _do_logic(self):
         pass
 
-    def _do_outputs(self):
-        self._screen.fill("black")
+    def _do_output(self):
+        self._screen.fill("#111111")
+
         pygame.display.flip()
         self._clock.tick(60)
