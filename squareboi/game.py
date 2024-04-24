@@ -21,7 +21,9 @@ class Game:
         # Event loop
         for event in pyg.event.get():
             # Alt+F4
-            if event.type == pyg.QUIT:
+            if event.type == pyg.QUIT or (
+                event.type == pyg.KEYDOWN and event.key == pyg.K_ESCAPE
+            ):
                 pyg.quit()
                 quit()
         
