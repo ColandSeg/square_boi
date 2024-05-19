@@ -34,7 +34,7 @@ class Game:
 
     def do_output(self):
         self.screen.fill("#111111")
-        self.screen.blit(self.player.surface, self.player.rect)
+        self.screen.blit(self.player.surf, self.player.rect)
 
         pyg.display.flip()
         self.clock.tick(60)

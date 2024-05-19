@@ -2,8 +2,15 @@ import pygame as pyg
 
 class Player:
     def __init__(self):
-        self.surface = pyg.image.load("assets/player_front.png").convert()
-        self.rect = self.surface.get_rect(center = (480, 240))
+        self.surfaces = {
+            "front":    pyg.image.load("assets/player_front.png").convert(),
+            "up":       pyg.image.load("assets/player_up.png").convert(),
+            "left":     pyg.image.load("assets/player_left.png").convert(),
+            "down":     pyg.image.load("assets/player_down.png").convert(),
+            "right":    pyg.image.load("assets/player_right.png").convert()
+        }
+        self.surf = self.surfaces["front"]
+        self.rect = self.surf.get_rect(center = (480, 240))
 
     def move(self):
         keys = pyg.key.get_pressed()
