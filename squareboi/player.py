@@ -16,19 +16,25 @@ class Player:
         keys = pyg.key.get_pressed()
         if keys[pyg.K_w]:
             self.rect.y -= 8
+
         if keys[pyg.K_a]:
             self.rect.x -= 8
+
         if keys[pyg.K_s]:
             self.rect.y += 8
+
         if keys[pyg.K_d]:
             self.rect.x += 8
     
-    def stay_on_screen(self):
+    def stay_on_screen(self, width: int, height: int):
         if self.rect.top <= 0:
             self.rect.top = 0
+
         if self.rect.left <= 0:
             self.rect.left = 0
-        if self.rect.bottom >= 480:
-            self.rect.bottom = 480
-        if self.rect.right >= 960:
-            self.rect.right = 960
+
+        if self.rect.bottom >= height:
+            self.rect.bottom = height
+
+        if self.rect.right >= width:
+            self.rect.right = width
