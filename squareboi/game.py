@@ -1,17 +1,20 @@
 import pygame as pyg
 from player import Player
+from level import Level
 
 WIDTH = 960
 HEIGHT = 480
+FPS = 60
 
 class Game:
     def __init__(self):
         pyg.init()
         pyg.display.set_caption("Square Boi")
         self.screen = pyg.display.set_mode((WIDTH, HEIGHT))
+        self.background = pyg.image.load("assets/sprites/space/bg_space.png").convert()
         self.clock = pyg.time.Clock()
 
-        self.player = Player()
+        self.player = Player((WIDTH // 2, HEIGHT // 2), 4)
 
     def run_game(self):
         # Game loop
@@ -23,10 +26,11 @@ class Game:
     def _get_input(self):
         # Event loop
         for event in pyg.event.get():
-            # Alt+F4
+            # Quit condition
             if event.type == pyg.QUIT or (
                 event.type == pyg.KEYDOWN and event.key == pyg.K_ESCAPE
             ):
+                # Quit the game
                 pyg.quit()
                 quit()
         
@@ -36,8 +40,8 @@ class Game:
         self.player.stay_on_screen(WIDTH, HEIGHT)
 
     def _do_output(self):
-        self.screen.fill("#111111")
-        self.screen.blit(self.player.surf, self.player.rect)
+        self.screen.blit(self.background, (0, 0))
+        self.player.draw(self.screen)
 
         pyg.display.flip()
-        self.clock.tick(60)
+        self.clock.tick(FPS)

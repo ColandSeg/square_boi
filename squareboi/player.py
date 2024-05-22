@@ -1,40 +1,50 @@
 import pygame as pyg
+from pygame.math import Vector2
 
 class Player:
-    def __init__(self):
-        self.surfaces = {
-            "front":    pyg.image.load("assets/player_front.png").convert(),
-            "up":       pyg.image.load("assets/player_up.png").convert(),
-            "left":     pyg.image.load("assets/player_left.png").convert(),
-            "down":     pyg.image.load("assets/player_down.png").convert(),
-            "right":    pyg.image.load("assets/player_right.png").convert()
+    def __init__(self, pos: tuple[int, int], speed: int):
+        self.sprites = {
+            "front":    self._load_png("player_front"),
+            "up":       self._load_png("player_up"),
+            "left":     self._load_png("player_left"),
+            "down":     self._load_png("player_down"),
+            "right":    self._load_png("player_right")
         }
-        self.surf = self.surfaces["front"]
-        self.rect = self.surf.get_rect(center = (480, 240))
+        
+        self.surf = self.sprites["front"]
+        self.rect = self.surf.get_rect(center = pos)
+        self.speed = speed
 
     def move(self):
         keys = pyg.key.get_pressed()
+        direction = Vector2(0, 0)
+
         if keys[pyg.K_w]:
-            self.rect.y -= 8
-
+            direction.y -= 1
+            self.surf = self.sprites["up"]
         if keys[pyg.K_a]:
-            self.rect.x -= 8
-
+            direction.x -= 1
+            self.surf = self.sprites["left"]
         if keys[pyg.K_s]:
-            self.rect.y += 8
-
+            direction.y += 1
+            self.surf = self.sprites["down"]
         if keys[pyg.K_d]:
-            self.rect.x += 8
+            direction.x += 1
+            self.surf = self.sprites["right"]
+
+        if direction.length() > 0:
+            direction.normalize()
+            self.rect.x += direction.x * self.speed
+            self.rect.y += direction.y * self.speed
+        else:
+            self.surf = self.sprites["front"] # default player sprite
     
     def stay_on_screen(self, width: int, height: int):
-        if self.rect.top <= 0:
-            self.rect.top = 0
+        self.rect.x = max(0, min(self.rect.x, width - self.rect.width))
+        self.rect.y = max(0, min(self.rect.y, height - self.rect.height))
 
-        if self.rect.left <= 0:
-            self.rect.left = 0
+    def draw(self, screen: pyg.Surface):
+        screen.blit(self.surf, self.rect)
 
-        if self.rect.bottom >= height:
-            self.rect.bottom = height
-
-        if self.rect.right >= width:
-            self.rect.right = width
+    def _load_png(self, file_name: str) -> pyg.Surface:
+        return pyg.image.load(f"assets/sprites/player/{file_name}.png").convert()
