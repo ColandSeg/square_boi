@@ -1,14 +1,15 @@
 import pygame as pyg
 from pygame.math import Vector2
+from utils import load_png
 
 class Player:
     def __init__(self, pos: tuple[int, int], speed: int):
         self.sprites = {
-            "front":    self._load_png("player_front"),
-            "up":       self._load_png("player_up"),
-            "left":     self._load_png("player_left"),
-            "down":     self._load_png("player_down"),
-            "right":    self._load_png("player_right")
+            "front":    load_png("player", "player_front"),
+            "up":       load_png("player", "player_up"),
+            "left":     load_png("player", "player_left"),
+            "down":     load_png("player", "player_down"),
+            "right":    load_png("player", "player_right"),
         }
         
         self.surf = self.sprites["front"]
@@ -45,6 +46,3 @@ class Player:
 
     def draw(self, screen: pyg.Surface):
         screen.blit(self.surf, self.rect)
-
-    def _load_png(self, file_name: str) -> pyg.Surface:
-        return pyg.image.load(f"assets/sprites/player/{file_name}.png").convert()
