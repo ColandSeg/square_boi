@@ -13,9 +13,9 @@ class Player:
         }
         
         self.surf = self.sprites["front"]
-        self.rect = self.surf.get_rect(center = pos)
+        self.rect = self.surf.get_rect(topleft = pos)
         self.speed = speed
-
+        
     def move(self):
         keys = pyg.key.get_pressed()
         direction = Vector2(0, 0)

@@ -11,12 +11,21 @@ class Game:
     def __init__(self):
         pyg.init()
         pyg.display.set_caption("Square Boi")
+
         self.screen = pyg.display.set_mode((WIDTH, HEIGHT))
         self.background = load_png("space", "bg_space")
         self.clock = pyg.time.Clock()
         self.active = True
 
-        self.player = Player((WIDTH // 2, HEIGHT // 2), 4)
+        self.player = Player((48, 48), 4)
+        # NOTE: TEMPORARY CODE
+        self.walls = [
+            Wall((144, 0)),
+            Wall((144, 48)),
+            Wall((144, 96)),
+            Wall((144, 144)),
+            Wall((0, 144))
+        ]
 
     def run_game(self):
         # Game loop
@@ -43,6 +52,9 @@ class Game:
             return
 
         self.player.stay_on_screen(WIDTH, HEIGHT)
+        # NOTE: TEMPORARY CODE
+        if self.player.rect.collidelist(self.walls) != -1:
+            pass
 
     def _do_output(self):
         if not self.active:
@@ -50,6 +62,9 @@ class Game:
 
         self.screen.blit(self.background, (0, 0))
         self.player.draw(self.screen)
+        # NOTE: TEMPORARY CODE
+        for wall in self.walls:
+            wall.draw(self.screen)
 
         pyg.display.flip()
         self.clock.tick(FPS)
