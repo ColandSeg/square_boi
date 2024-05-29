@@ -17,7 +17,7 @@ python -m pip install -r requirements.txt
 ```
 
 ## How to Run
-Navigate to the location of the root folder:
+In a command line, Navigate to the location of the root folder:
 ```bash
 cd "<path>/square_boi"
 ```
