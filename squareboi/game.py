@@ -1,6 +1,7 @@
 import pygame as pyg
 from player import Player
 from wall import Wall
+from level import Level
 from utils import load_png
 
 WIDTH = 960
@@ -33,6 +34,7 @@ class Game:
             self._get_input()
             self._do_logic()
             self._do_output()
+        pyg.quit()
 
     def _get_input(self):
         # Event loop
@@ -45,7 +47,7 @@ class Game:
                 self.active = False
                 return
         
-        self.player.move()
+        self.player.move(self.walls)
 
     def _do_logic(self):
         if not self.active:

@@ -1,5 +1,6 @@
 import pygame as pyg
 from pygame.math import Vector2
+from wall import Wall
 from utils import load_png
 
 class Player:
@@ -16,7 +17,7 @@ class Player:
         self.rect = self.surf.get_rect(topleft = pos)
         self.speed = speed
         
-    def move(self):
+    def move(self, walls: list[Wall]):
         keys = pyg.key.get_pressed()
         direction = Vector2(0, 0)
 
@@ -35,8 +36,19 @@ class Player:
 
         if direction.length() > 0:
             direction.normalize()
-            self.rect.x += direction.x * self.speed
-            self.rect.y += direction.y * self.speed
+            # I have difficulty understanding what this code does, but it'll work for now
+            new_rect = self.rect.move(direction.x * self.speed, direction.y * self.speed)
+
+            if not any(new_rect.colliderect(wall.rect) for wall in walls):
+                self.rect = new_rect
+            else:
+                temp_rect_x = self.rect.move(direction.x * self.speed, 0)
+                temp_rect_y = self.rect.move(0, direction.y * self.speed)
+                if not any(temp_rect_x.colliderect(wall.rect) for wall in walls):
+                    self.rect.x += direction.x * self.speed
+                if not any(temp_rect_y.colliderect(wall.rect) for wall in walls):
+                    self.rect.y += direction.y * self.speed
+
         else:
             self.surf = self.sprites["front"] # default player sprite
     
