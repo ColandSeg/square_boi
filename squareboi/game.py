@@ -19,14 +19,9 @@ class Game:
         self.active = True
 
         self.player = Player((48, 48), 4)
-        # NOTE: TEMPORARY CODE
-        self.walls = [
-            Wall((144, 0)),
-            Wall((144, 48)),
-            Wall((144, 96)),
-            Wall((144, 144)),
-            Wall((0, 144))
-        ]
+        # NOTE: TEMPORARY CODE. Level need cleanup.
+        self.level = Level(1)
+        self.walls = self.level.load_level()[0]
 
     def run_game(self):
         # Game loop
