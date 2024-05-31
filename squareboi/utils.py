@@ -6,3 +6,6 @@ def load_png(directory: str, file_name: str, alpha=False) -> pyg.Surface:
         return surface.convert_alpha()
     else:
         return surface.convert()
+    
+def load_wav(file_name: str) -> pyg.mixer.Sound:
+    return pyg.mixer.Sound(f"assets/audio/{file_name}.wav")

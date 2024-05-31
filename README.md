@@ -38,3 +38,6 @@ A list of resources used in the development of this game.
 - Clear Code's [The ultimate introduction to Pygame](https://www.youtube.com/watch?v=AY9MnQ4x3zk&t=3576s).
 - Real Python's [Build an Asteroids Game With Python and Pygame](https://realpython.com/asteroids-game-python/), by Pawl Fertyk.
 - Real Python's [Python Virtual Environments: A Primer](https://realpython.com/python-virtual-environments-a-primer/), by Martin Breuss
+
+### Audio
+- Little Robot Sound Factory's [8-Bit Sound Effects Library](https://opengameart.org/content/8-bit-sound-effects-library)

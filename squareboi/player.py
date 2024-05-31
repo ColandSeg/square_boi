@@ -1,7 +1,7 @@
 import pygame as pyg
 from pygame.math import Vector2
 from wall import Wall
-from utils import load_png
+from utils import load_png, load_wav
 
 class Player:
     def __init__(self, pos: tuple[int, int], speed: int):
@@ -16,6 +16,9 @@ class Player:
         self.surf = self.sprites["front"]
         self.rect = self.surf.get_rect(topleft = pos)
         self.speed = speed
+        # play this sound when hitting a wall
+        # don't play repeatedly, it will sound distorted
+        self.hit_sound = load_wav("hit")
         
     def move(self, walls: list[Wall]):
         keys = pyg.key.get_pressed()
