@@ -20,7 +20,7 @@ class Game:
 
         # Loading
         self.level = Level(1)
-        self.background = load_png(self.level.load_background_path())
+        self.background = self.level.load_background()
         self.player = self.level.load_player()
         self.walls = self.level.load_walls()
 

@@ -1,5 +1,7 @@
+import pygame as pyg
 from player import Player
 from wall import Wall
+from utils import load_png
 
 THEMES = {
     1: "space",
@@ -9,8 +11,6 @@ THEMES = {
 CELL_LENGTH = 48
 
 class Level:
-    # maybe this code can benefit from a match-case?
-
     def __init__(self, lvl_num: int):
         self.lvl_num = lvl_num
 
@@ -31,11 +31,12 @@ class Level:
                 case "w": # walls
                     self.txt_walls = line.split("|")
 
-    def load_background_path(self) -> str:
+    def load_background(self) -> pyg.Surface:
         theme = THEMES[int(self.txt_theme[1])]
         bg_path = f"{theme}/bg_{theme}"
+        background = load_png(bg_path)
 
-        return bg_path
+        return background
     
     def load_player(self) -> Player:    
         txt_pos = self.txt_player[1].split(",")
