@@ -1,27 +1,28 @@
 import pygame as pyg
-from player import Player
-from wall import Wall
 from level import Level
 from utils import load_png
 
-WIDTH = 960
-HEIGHT = 480
+# TODO: write classes for obstacles
+
+SCREEN_WIDTH = 960
+SCREEN_HEIGHT = 480
 FPS = 60
 
 class Game:
     def __init__(self):
+        # Setup
         pyg.init()
+        self.screen = pyg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pyg.display.set_caption("Square Boi")
-
-        self.screen = pyg.display.set_mode((WIDTH, HEIGHT))
-        self.background = load_png("space", "bg_space")
+        pyg.display.set_icon(load_png("icon"))
         self.clock = pyg.time.Clock()
         self.active = True
 
-        self.player = Player((48, 48), 4)
-        # NOTE: TEMPORARY CODE. Level need cleanup.
+        # Loading
         self.level = Level(1)
-        self.walls = self.level.load_level()[0]
+        self.background = load_png(self.level.load_background_path())
+        self.player = self.level.load_player()
+        self.walls = self.level.load_walls()
 
     def run_game(self):
         # Game loop
@@ -42,14 +43,16 @@ class Game:
                 self.active = False
                 return
         
+        # self.player.move()
         self.player.move(self.walls)
 
     def _do_logic(self):
         if not self.active:
             return
 
-        self.player.stay_on_screen(WIDTH, HEIGHT)
+        self.player.stay_on_screen(SCREEN_WIDTH, SCREEN_HEIGHT)
         # NOTE: TEMPORARY CODE
+        # collision of player with lists
         if self.player.rect.collidelist(self.walls) != -1:
             pass
 

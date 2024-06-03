@@ -1,33 +1,58 @@
+from player import Player
 from wall import Wall
 
+THEMES = {
+    1: "space",
+    2: "grass_hills",
+    3: "caves"
+}
+CELL_LENGTH = 48
+
 class Level:
-    # Looks terrible
-    # TODO: clean up this code
+    # maybe this code can benefit from a match-case?
 
-    def __init__(self, level_num: int):
-        self.level_num = level_num
-        self.layout = []
+    def __init__(self, lvl_num: int):
+        self.lvl_num = lvl_num
+        self.txt_layout = None
 
-    def load_level(self) -> list[list[Wall]]:
-        with open(f"data/lvl_{self.level_num}.txt", "r") as level_file:
-            layout_text = [line.strip() for line in level_file]
+        with open(f"data/lvl_{self.lvl_num}.txt", "r") as lvl_file:
+            self.txt_layout = [line.strip() for line in lvl_file]
+
+    def load_background_path(self):
+        txt_theme = None
+        for line in self.txt_layout:
+            if line[0] == "t":
+                txt_theme = line.split("|")
         
-        for text in layout_text:
-            text_list = text.split("|")
-            match text_list[0]:
-                case "w":
-                    self.layout.append(self._load_walls(text_list))
+        theme = THEMES[int(txt_theme[1])]
+
+        return f"{theme}/bg_{theme}"
+    
+    def load_player(self) -> Player:
+        txt_player = None
+        for line in self.txt_layout:
+            if line[0] == "p":
+                txt_player = line.split("|")
         
-        return self.layout
+        txt_pos = txt_player[1].split(",")
+        pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
+        speed = int(txt_player[2])
+        player = Player(pos, speed)
 
-    def _load_player(self):
-        pass
+        return player
+    
+    def load_walls(self) -> list[Wall]:
+        txt_walls = None
+        walls = []
+        for line in self.txt_layout:
+            if line[0] == "w":
+                txt_walls = line.split("|")
+        
+        txt_walls.pop(0)
+        for line in txt_walls:
+            txt_pos = line.split(",")
+            pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
 
-    def _load_walls(self, text_list: list[str]):
-        wall_list = []
-        text_list.pop(0)
-        for text in text_list:
-            pos = text.split(",")
-            t = (int(pos[0]) * 48, int(pos[1]) * 48)
-            wall_list.append(Wall(t))
-        return wall_list
+            walls.append(Wall(pos))
+        
+        return walls

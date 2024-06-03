@@ -6,21 +6,26 @@ from utils import load_png, load_wav
 class Player:
     def __init__(self, pos: tuple[int, int], speed: int):
         self.sprites = {
-            "front":    load_png("player", "player_front"),
-            "up":       load_png("player", "player_up"),
-            "left":     load_png("player", "player_left"),
-            "down":     load_png("player", "player_down"),
-            "right":    load_png("player", "player_right"),
+            "front":    load_png("player/player_front"),
+            "up":       load_png("player/player_up"),
+            "left":     load_png("player/player_left"),
+            "down":     load_png("player/player_down"),
+            "right":    load_png("player/player_right"),
         }
         
         self.surf = self.sprites["front"]
         self.rect = self.surf.get_rect(topleft = pos)
         self.speed = speed
         # play this sound when hitting a wall
-        # don't play repeatedly, it will sound distorted
+        # don't play repeatedly; it will sound distorted
         self.hit_sound = load_wav("hit")
         
     def move(self, walls: list[Wall]):
+        # perhaps the code for `move` is getting too cluttered
+        # TODO: Abstract and divide code for `move` into:
+        #   - Moving
+        #   - Changing sprites
+        #   - Collision handling
         keys = pyg.key.get_pressed()
         direction = Vector2(0, 0)
 
@@ -56,6 +61,7 @@ class Player:
             self.surf = self.sprites["front"] # default player sprite
     
     def stay_on_screen(self, width: int, height: int):
+        # understand this method of clamping
         self.rect.x = max(0, min(self.rect.x, width - self.rect.width))
         self.rect.y = max(0, min(self.rect.y, height - self.rect.height))
 
