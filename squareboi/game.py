@@ -1,5 +1,6 @@
 import pygame as pyg
 from level import Level
+from cannon import Cannon
 from utils import load_png
 
 # TODO: write classes for obstacles
@@ -23,6 +24,12 @@ class Game:
         self.background = self.level.load_background()
         self.player = self.level.load_player()
         self.walls = self.level.load_walls()
+        # NOTE: temporary code
+        self.obstacles = [
+            Cannon((7*48, 1*48), "S"),
+            Cannon((18*48, 6*48), "N"),
+            Cannon((13*48, 8*48), "W")
+        ]
 
     def run_game(self):
         # Game loop
@@ -65,6 +72,8 @@ class Game:
         # NOTE: TEMPORARY CODE
         for wall in self.walls:
             wall.draw(self.screen)
+        for obstacle in self.obstacles:
+            obstacle.draw(self.screen)
 
         pyg.display.flip()
         self.clock.tick(FPS)
