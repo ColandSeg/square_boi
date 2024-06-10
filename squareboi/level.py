@@ -1,7 +1,8 @@
 import pygame as pyg
 from player import Player
 from wall import Wall
-from utils import load_png
+from cannon import Cannon
+from utils import load_img
 
 THEMES = {
     1: "space",
@@ -33,8 +34,8 @@ class Level:
 
     def load_background(self) -> pyg.Surface:
         theme = THEMES[int(self.txt_theme[1])]
-        bg_path = f"{theme}/bg_{theme}"
-        background = load_png(bg_path)
+        bg_path = f"{theme}/bg_{theme}.png"
+        background = load_img(bg_path)
 
         return background
     

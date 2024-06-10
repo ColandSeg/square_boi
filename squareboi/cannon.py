@@ -1,11 +1,11 @@
 import pygame as pyg
-from utils import load_png
+from utils import load_img
 
 SHELL_SPEED = 3
 
 class Cannon:
     def __init__(self, pos: tuple[int, int], facing: str):
-        self.surf = load_png("obstacles/cannon", True)
+        self.surf = load_img("obstacles/cannon.png", True)
         self.rect = self.surf.get_rect(topleft = pos)
         self.facing = facing # N, S, E, W
 
