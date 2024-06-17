@@ -1,6 +1,6 @@
 import pygame as pyg
 from level import Level
-from cannon import Cannon # NOTE: temporary (?)
+from squareboi.objects.cannon import Cannon # NOTE: temporary (?)
 from utils import load_img
 
 SCREEN_WIDTH = 960

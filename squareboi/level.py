@@ -1,13 +1,10 @@
 import pygame as pyg
-from player import Player
-from wall import Wall
-from cannon import Cannon
+from objects.player import Player
+from objects.wall import Wall
 from utils import load_img
 
 THEMES = {
     1: "space",
-    2: "grass_hills",
-    3: "caves"
 }
 CELL_LENGTH = 48
 

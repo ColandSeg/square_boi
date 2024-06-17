@@ -1,9 +1,10 @@
 import pygame as pyg
 from pygame.math import Vector2
-from wall import Wall
+from objects.game_object import GameObject
+from objects.wall import Wall
 from utils import load_img, clamp
 
-class Player:
+class Player(GameObject):
     def __init__(self, pos: tuple[int, int], speed: int):
         self.sprites = {
             # default
@@ -19,9 +20,9 @@ class Player:
             "southeast":    load_img("player/player_SE.png"),
             "southwest":    load_img("player/player_SW.png")
         }
-        
-        self.surf = self.sprites["front"]
-        self.rect = self.surf.get_rect(topleft = pos)
+
+        super().__init__(self.sprites["front"], pos)       
+
         self.speed = speed
         self.direction = Vector2(0, 0)
         
@@ -109,5 +110,4 @@ class Player:
         self.rect.x = clamp(self.rect.x, 0, width - self.rect.width)
         self.rect.y = clamp(self.rect.y, 0, height - self.rect.height)
 
-    def draw(self, screen: pyg.Surface):
-        screen.blit(self.surf, self.rect)
+    

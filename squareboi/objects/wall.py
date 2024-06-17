@@ -1,4 +1,5 @@
 import pygame as pyg
+from objects import game_object
 from utils import load_img
 
 class Wall:
