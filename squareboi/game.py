@@ -1,6 +1,8 @@
 import pygame as pyg
 from level import Level
-from squareboi.objects.cannon import Cannon # NOTE: temporary (?)
+# NOTE: temporary
+from objects.cannon import Cannon
+from objects.saw import Saw
 from utils import load_img
 
 SCREEN_WIDTH = 960
@@ -25,10 +27,13 @@ class Game:
         self.player = self.level.load_player()
         self.walls = self.level.load_walls()
         # NOTE: temporary code
-        self.obstacles = [
+        self.cannons = [
             Cannon((7*48, 1*48), "S"),
             Cannon((18*48, 6*48), "N"),
             Cannon((13*48, 8*48), "W")
+        ]
+        self.saws = [
+            Saw((4*48, 2*48), "n")
         ]
 
     def run_game(self):
@@ -53,20 +58,17 @@ class Game:
                 return
         
         # Player movement
-        # self.player.move()
         self.player.move(self.walls)
-        self.player.change_sprite()
 
     def _do_logic(self):
         if not self.active:
             return
 
+        self.player.change_sprite()
         self.player.stay_on_screen(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-        # NOTE: TEMPORARY CODE
-        # collision of player with lists
-        if self.player.rect.collidelist(self.walls) != -1:
-            pass
+        for saw in self.saws:
+            saw.move(self.walls)
 
     def _do_output(self):
         if not self.active:
@@ -76,8 +78,10 @@ class Game:
         self.player.draw(self.screen)
         for wall in self.walls:
             wall.draw(self.screen)
-        for obstacle in self.obstacles:
-            obstacle.draw(self.screen)
+        for cannon in self.cannons:
+            cannon.draw(self.screen)
+        for saw in self.saws:
+            saw.draw(self.screen)
 
         pyg.display.flip()
         self.clock.tick(FPS)

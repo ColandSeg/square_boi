@@ -23,5 +23,5 @@ class Cannon(GameObject):
         pass
 
 class Shell(GameObject):
-    def __init__(self):
-        pass
+    def __init__(self, pos: tuple[int, int]):
+        super().__init__(load_img("obstacles/shell.png", True), pos)

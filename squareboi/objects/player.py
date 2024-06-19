@@ -32,7 +32,7 @@ class Player(GameObject):
         #   - Moving
         #   - Collision handling
         keys = pyg.key.get_pressed()
-        self.direction = Vector2(0, 0) # reset direction
+        self.direction *= 0 # reset direction
 
         if keys[pyg.K_w]:
             self.direction.y -= 1
@@ -58,56 +58,38 @@ class Player(GameObject):
                     self.rect.y += self.direction.y * self.speed
     
     def change_sprite(self):
-        keys = pyg.key.get_pressed()
+        self.surf = self.sprites["front"] # default sprite
 
-        if self.direction.length() > 0:
-            # straight
-            if keys[pyg.K_w] and not ( # W
-                keys[pyg.K_s]
-            ):
-                self.surf = self.sprites["up"]
+        # straight sprites
+        if self.direction == (1, 0):
+            self.surf = self.sprites["right"]
+        if self.direction == (0, 1):
+            self.surf = self.sprites["down"]
+        if self.direction == (-1, 0):
+            self.surf = self.sprites["left"]
+        if self.direction == (0, -1):
+            self.surf = self.sprites["up"]
+        
+        # diagonal sprites
+        if self.direction == (1, 1):
+            self.surf = self.sprites["southeast"]
+        if self.direction == (-1, 1):
+            self.surf = self.sprites["southwest"]
+        if self.direction == (1, -1):
+            self.surf = self.sprites["northeast"]
+        if self.direction == (-1, -1):
+            self.surf = self.sprites["northwest"]
 
-            if keys[pyg.K_a] and not ( # A
-                keys[pyg.K_d]
-            ):
-                self.surf = self.sprites["left"]
-
-            if keys[pyg.K_s] and not ( # S
-                keys[pyg.K_w]
-            ):
-                self.surf = self.sprites["down"]
-
-            if keys[pyg.K_d] and not ( # D
-                keys[pyg.K_a]
-            ):
-                self.surf = self.sprites["right"]
-            
-            # diagonals
-            if keys[pyg.K_w] and keys[pyg.K_a] and not ( # W + A
-                keys[pyg.K_s] or keys[pyg.K_d]
-            ):
-                self.surf = self.sprites["northwest"]
-
-            if keys[pyg.K_w] and keys[pyg.K_d] and not ( # W + D
-                keys[pyg.K_s] or keys[pyg.K_a]
-            ):
-                self.surf = self.sprites["northeast"]
-
-            if keys[pyg.K_s] and keys[pyg.K_a] and not ( # S + A
-                keys[pyg.K_w] or keys[pyg.K_d]
-            ):
-                self.surf = self.sprites["southwest"]
-
-            if keys[pyg.K_s] and keys[pyg.K_d] and not ( # S + D
-                keys[pyg.K_w] or keys[pyg.K_a]
-            ):
-                self.surf = self.sprites["southeast"]
-
-        else:
-            self.surf = self.sprites["front"] # default player sprite
-    
     def stay_on_screen(self, width: int, height: int):
         self.rect.x = clamp(self.rect.x, 0, width - self.rect.width)
         self.rect.y = clamp(self.rect.y, 0, height - self.rect.height)
 
-    
+    def bump_with(self, objects: list[GameObject]):
+        # TODO: add method in which the player bumps with an object
+        # Collisions with said objects act like walls
+        pass
+
+    def crash_with(self):
+        # TODO: add method in which the player crashes with an object
+        # Collisions with said objects act like Game Overs
+        pass

@@ -28,6 +28,8 @@ class Level:
                     self.txt_player = line.split("|")
                 case "w": # walls
                     self.txt_walls = line.split("|")
+                case "c": # cannons
+                    self.txt_cannons = line.split("|")
 
     def load_background(self) -> pyg.Surface:
         theme = THEMES[int(self.txt_theme[1])]

@@ -6,11 +6,11 @@ def load_img(file_path: str, alpha=False) -> Surface:
     """Loads an image file and returns a pygame Surface object.
 
     Args:
-        file_path (str): the relative path of an image within 'assets/sprites'
+        file_path (str): the relative path of an image within 'assets/sprites/'
         alpha (bool): whether to include transparent pixels (defaults to False)
     
     Returns:
-        surface: an image loaded as a pygame Surface
+        Surface: an image loaded as a pygame Surface
     """
 
     surface = load(f"assets/sprites/{file_path}")
@@ -21,10 +21,10 @@ def load_audio(file_path: str) -> Sound:
     """Loads an audio file and returns a pygame Sound object
     
     Args:
-        file_path (str): the relative path of an audio file within 'assets/sprites'
+        file_path (str): the relative path of an audio file within 'assets/audio/'
     
     Returns:
-        sound: an audio file loaded as a pygame Sound object
+        Sound: an audio file loaded as a pygame Sound object
     """
 
     sound = Sound(f"assets/audio/{file_path}")
