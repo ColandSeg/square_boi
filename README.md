@@ -1,5 +1,5 @@
 # Square Boi
-A game about the adventures of Square Boi.
+A game about the adventures of a Square Boi. This is a personal project for me to learn how to (1.) program with OOP, (2.) game development, and (3.) project management.
 
 ## Requirements
 - Python 3.11
@@ -9,7 +9,7 @@ A game about the adventures of Square Boi.
 Install Python from the [download page](https://www.python.org/downloads/) at python.org.
 
 ### Pygame
-It is recommended to use a [virtual environment](https://docs.python.org/3/library/venv.html) to run this project.
+It is recommended (but not necessary) to use a [virtual environment](https://docs.python.org/3/library/venv.html) to run this project.
 
 To install pygame, run the following command:
 ```bash
