@@ -1,5 +1,4 @@
 import pygame as pyg
-from pygame.math import Vector2
 from objects.game_object import GameObject
 from objects.wall import Wall
 from utils import load_img, clamp
@@ -21,10 +20,7 @@ class Player(GameObject):
             "southwest":    load_img("player/player_SW.png")
         }
 
-        super().__init__(self.sprites["front"], pos)       
-
-        self.speed = speed
-        self.direction = Vector2(0, 0)
+        super().__init__(self.sprites["front"], pos, speed)
         
     def move(self, walls: list[Wall]):
         # Perhaps the code for `move` is getting too cluttered...
@@ -89,7 +85,7 @@ class Player(GameObject):
         # Collisions with said objects act like walls
         pass
 
-    def crash_with(self):
+    def crash_with(self, objects: list[GameObject]):
         # TODO: add method in which the player crashes with an object
         # Collisions with said objects act like Game Overs
         pass

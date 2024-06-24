@@ -3,6 +3,14 @@ from objects.game_object import GameObject
 from utils import load_img
 
 SHELL_SPEED = 3
+FAST_SHELL_SPEED = 6
+
+class Shell(GameObject):
+    def __init__(self, pos: tuple[int, int]):
+        super().__init__(load_img("obstacles/shell.png", True), pos, SHELL_SPEED)
+    
+    def move(self):
+        pass
 
 class Cannon(GameObject):
     def __init__(self, pos: tuple[int, int], facing: str):
@@ -19,9 +27,7 @@ class Cannon(GameObject):
             case "W":
                 self.surf = pyg.transform.rotate(self.surf, 90)
 
-    def fire(self):
-        pass
+    def fire(self) -> Shell:
+        shell = Shell(self.rect.x)
 
-class Shell(GameObject):
-    def __init__(self, pos: tuple[int, int]):
-        super().__init__(load_img("obstacles/shell.png", True), pos)
+        return shell

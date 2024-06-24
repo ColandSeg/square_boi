@@ -1,11 +1,6 @@
-import pygame as pyg
-from objects import game_object
+from objects.game_object import GameObject
 from utils import load_img
 
-class Wall:
-    def __init__(self, pos: tuple[int, int]):
-        self.surf = load_img("space/wall_space.png")
-        self.rect = self.surf.get_rect(topleft = pos)
-
-    def draw(self, screen: pyg.Surface):
-        screen.blit(self.surf, self.rect)
+class Wall(GameObject):
+    def __init__(self, pos: tuple[int, int], theme):
+        super().__init__(load_img(f"{theme}/wall_{theme}.png"), pos)

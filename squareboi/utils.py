@@ -36,7 +36,7 @@ def clamp(value: int, min_value: int, max_value: int) -> int:
     Args:
         value (int): the value to be clamped
         min_value (int): the minimum allowed value
-        min_value (int): the minimum allowed value
+        min_value (int): the maximum allowed value
     
     Returns:
         int: The clamped value
