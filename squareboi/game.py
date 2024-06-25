@@ -53,7 +53,7 @@ class Game:
                     self.shells.append(cannon.fire())
         
         # Player movement
-        self.player.move(self.walls)
+        self.player.move(self.walls, self.cannons)
 
     def _do_logic(self):
         if not self.active:

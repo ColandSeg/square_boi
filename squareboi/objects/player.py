@@ -1,5 +1,6 @@
 import pygame as pyg
 from objects.game_object import GameObject
+from objects.cannon import Cannon
 from objects.wall import Wall
 from utils import load_img, clamp
 
@@ -22,7 +23,7 @@ class Player(GameObject):
 
         super().__init__(self.sprites["front"], pos, speed)
         
-    def move(self, walls: list[Wall]):
+    def move(self, walls: list[Wall], cannons: list[Cannon]):
         # Perhaps the code for `move` is getting too cluttered...
         # TODO: Divide code for `move` into differente methods:
         #   - Moving
@@ -40,17 +41,17 @@ class Player(GameObject):
             self.direction.x += 1
 
         if self.direction.length() > 0:
-            # I have difficulty understanding what this code does, but it'll work for now
+            # No idea how this code works, but it works for now
             new_rect = self.rect.move(self.direction.x * self.speed, self.direction.y * self.speed)
 
-            if not any(new_rect.colliderect(wall.rect) for wall in walls):
+            if not any(new_rect.colliderect(obj.rect) for obj in walls + cannons):
                 self.rect = new_rect
             else:
                 temp_rect_x = self.rect.move(self.direction.x * self.speed, 0)
                 temp_rect_y = self.rect.move(0, self.direction.y * self.speed)
-                if not any(temp_rect_x.colliderect(wall.rect) for wall in walls):
+                if not any(temp_rect_x.colliderect(obj.rect) for obj in walls + cannons):
                     self.rect.x += self.direction.x * self.speed
-                if not any(temp_rect_y.colliderect(wall.rect) for wall in walls):
+                if not any(temp_rect_y.colliderect(obj.rect) for obj in walls + cannons):
                     self.rect.y += self.direction.y * self.speed
     
     def change_sprite(self):
