@@ -46,6 +46,11 @@ class Game:
                 # Quit the game
                 self.active = False
                 return
+            
+            # Cannon firing events
+            for cannon in self.cannons:
+                if event.type == cannon.event_type:
+                    self.shells.append(cannon.fire())
         
         # Player movement
         self.player.move(self.walls)
@@ -57,8 +62,22 @@ class Game:
         self.player.change_sprite()
         self.player.stay_on_screen(SCREEN_WIDTH, SCREEN_HEIGHT)
 
+        for shell in self.shells[:]:
+            if shell.crash_with(self.walls, SCREEN_WIDTH, SCREEN_HEIGHT):
+                self.shells.remove(shell)
+            else:
+                shell.move()
+
         for saw in self.saws:
             saw.move(self.walls, SCREEN_WIDTH, SCREEN_HEIGHT)
+
+        if self.player.rect.collidelist(self.shells) != -1:
+            self.active = False
+            return
+        
+        if self.player.rect.collidelist(self.saws) != -1:
+            self.active = False
+            return
 
     def _do_output(self):
         if not self.active:
@@ -72,6 +91,8 @@ class Game:
             wall.draw(self.screen)
         for cannon in self.cannons:
             cannon.draw(self.screen)
+        for shell in self.shells:
+            shell.draw(self.screen)
         for saw in self.saws:
             saw.draw(self.screen)
 
