@@ -31,8 +31,8 @@ class Saw(GameObject):
 
         # Turn around
         if any(self.rect.colliderect(wall.rect) for wall in walls) or (
-        #     self.rect.x <= 0 or self.rect.x >= height - self.rect.width
-        # ) or (
+            self.rect.x <= 0 or self.rect.x >= width - self.rect.width
+        ) or (
             self.rect.y <= 0 or self.rect.y >= height - self.rect.height
         ):
             self.speed *= -1
