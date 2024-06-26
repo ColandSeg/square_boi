@@ -28,6 +28,7 @@ def load_audio(file_path: str) -> Sound:
     """
 
     sound = Sound(f"assets/audio/{file_path}")
+    sound.set_volume(0.2)
     return sound
 
 def clamp(value: int, min_value: int, max_value: int) -> int:

@@ -1,7 +1,7 @@
 import pygame as pyg
 from objects.game_object import GameObject
 from objects.shell import Shell
-from utils import load_img
+from utils import load_img, load_audio
 
 class Cannon(GameObject):
     next_event_id = pyg.USEREVENT + 1
@@ -30,7 +30,10 @@ class Cannon(GameObject):
         # Set a timer for this cannon to fire every 3 seconds (3000 milliseconds)
         pyg.time.set_timer(self.event_type, 2500)
 
+        self.fire_wav = load_audio("fire.wav")
+
     def fire(self) -> Shell:
         shell = Shell(self.shell_pos, self.facing)
+        self.fire_wav.play()
 
         return shell

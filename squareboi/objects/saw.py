@@ -17,7 +17,7 @@ class Saw(GameObject):
         elif facing == "N" or facing == "S":
             self.movement = "v"
 
-        self.wall_hit = load_audio("hit.wav")
+        self.hit_wav = load_audio("hit.wav")
         
     def move(self, walls: list[Wall], width: int, height: int):
         self.direction *= 0
@@ -36,5 +36,5 @@ class Saw(GameObject):
             self.rect.y <= 0 or self.rect.y >= height - self.rect.height
         ):
             self.speed *= -1
-            self.wall_hit.play()
+            self.hit_wav.play()
     

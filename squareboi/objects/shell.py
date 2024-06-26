@@ -1,6 +1,6 @@
 from objects.game_object import GameObject
 from objects.wall import Wall
-from utils import load_img
+from utils import load_img, load_audio
 
 SHELL_SPEED = 3
 FAST_SHELL_SPEED = 6
@@ -9,6 +9,7 @@ class Shell(GameObject):
     def __init__(self, pos: tuple[int, int], facing: str):
         super().__init__(load_img("obstacles/shell.png", True), pos, SHELL_SPEED)
         self.set_direction(facing)
+        self.crash_wav = load_audio("crash.wav")
 
     
     def set_direction(self, facing: str):
@@ -31,6 +32,7 @@ class Shell(GameObject):
         ) or (
             self.rect.y <= 0 or self.rect.y >= height - self.rect.height
         ):
+            self.crash_wav.play()
             return True
         else:
             return False
