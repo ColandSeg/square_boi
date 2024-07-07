@@ -3,6 +3,7 @@ from objects.player import Player
 from objects.wall import Wall
 from objects.cannon import Cannon
 from objects.saw import Saw
+from objects.electric_current import ElectricCurrent
 from utils import load_img
 
 THEMES = {
@@ -88,3 +89,15 @@ class Level:
             saws.append(Saw(pos, facing))
         
         return saws
+    
+    def load_electric_currents(self) -> list[ElectricCurrent]:
+        electrics = []
+
+        for txt_electric in self.txt_electrics:
+            txt_pos = txt_electric[1].split(",")
+            pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
+            facing = txt_electric[2]
+
+            electrics.append(ElectricCurrent(pos, facing))
+        
+        return electrics

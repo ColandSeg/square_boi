@@ -27,6 +27,7 @@ class Game:
         self.cannons = self.level.load_cannons()
         self.shells = []
         self.saws = self.level.load_saws()
+        self.electric_currents = self.level.load_electric_currents()
 
     def run_game(self):
         # Game loop
@@ -78,6 +79,10 @@ class Game:
         if self.player.rect.collidelist(self.saws) != -1:
             self.active = False
             return
+        
+        if self.player.rect.collidelist(self.electric_currents) != -1:
+            self.active = False
+            return
 
     def _do_output(self):
         if not self.active:
@@ -95,6 +100,8 @@ class Game:
             shell.draw(self.screen)
         for saw in self.saws:
             saw.draw(self.screen)
+        for electric in self.electric_currents:
+            electric.draw(self.screen)
 
         pyg.display.flip()
         self.clock.tick(FPS)
