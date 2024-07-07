@@ -41,5 +41,8 @@ A list of resources used in the development of this game.
 - Real Python's [PyGame: A Primer on Game Programming in Python](https://realpython.com/pygame-a-primer/), Jon Fincher
 - Real Python's [Build an Asteroids Game With Python and Pygame](https://realpython.com/asteroids-game-python/), by Pawl Fertyk
 
+### Art
+- [Pixilart](https://www.pixilart.com/)
+
 ### Audio
 - Little Robot Sound Factory: [8-Bit Sound Effects Library](https://opengameart.org/content/8-bit-sound-effects-library)
