@@ -71,16 +71,12 @@ class Game:
 
         for saw in self.saws:
             saw.move(self.walls, SCREEN_WIDTH, SCREEN_HEIGHT)
-
-        if self.player.rect.collidelist(self.shells) != -1:
-            self.active = False
-            return
         
-        if self.player.rect.collidelist(self.saws) != -1:
-            self.active = False
-            return
-        
-        if self.player.rect.collidelist(self.electric_currents) != -1:
+        if (
+            self.player.rect.collidelist(self.shells) != -1 or \
+            self.player.rect.collidelist(self.saws) != -1 or \
+            self.player.rect.collidelist(self.electric_currents) != -1
+        ):
             self.active = False
             return
 
@@ -92,16 +88,12 @@ class Game:
 
         # Drawing
         self.player.draw(self.screen)
-        for wall in self.walls:
-            wall.draw(self.screen)
-        for cannon in self.cannons:
-            cannon.draw(self.screen)
-        for shell in self.shells:
-            shell.draw(self.screen)
-        for saw in self.saws:
-            saw.draw(self.screen)
-        for electric in self.electric_currents:
-            electric.draw(self.screen)
+        for object in (
+            self.walls + self.cannons + \
+            self.shells + self.saws + \
+            self.electric_currents
+        ):
+            object.draw(self.screen)
 
         pyg.display.flip()
         self.clock.tick(FPS)
