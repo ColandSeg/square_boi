@@ -1,5 +1,6 @@
 import pygame as pyg
-from utils import load_image
+from objects.player import Player
+from utils import load_png
 
 SCREEN_WIDTH = 960
 SCREEN_HEIGHT = 480
@@ -13,7 +14,9 @@ class Game:
         self.clock = pyg.time.Clock()
         self.running = True
 
-        self.background = load_image("bg_space_v1.png")
+        self.background = load_png("space/bg_space_v1")
+
+        self.player = Player((0, 0), 4)
 
     def run_game(self):
         while self.running:
@@ -28,6 +31,9 @@ class Game:
             if event.type == pyg.QUIT:
                 self.running = False
                 return
+            
+        keys = pyg.key.get_pressed()
+        self.player.update(keys)
         
     def _do_logic(self):
         if not self.running:
