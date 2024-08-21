@@ -2,7 +2,7 @@ from pygame import Surface
 from pygame.image import load
 
 def load_png(file_path: str, is_alpha=False) -> Surface:
-    """Loads an image file and returns a pygame Surface.
+    """Loads a PNG file and returns a pygame Surface.
     
     Arg:
         file_path (str): the relative path of a PNG within 'assets/sprites/'
