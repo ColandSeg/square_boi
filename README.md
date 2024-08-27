@@ -21,3 +21,7 @@ A list of resources used in the development of this project.
 
 ### Markdown
 - GitHub's [Basic writing and formatting syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+- [Make a README](https://www.makeareadme.com/)
+
+### Real Python
+- Jon Fincher's [PyGame: A Primer on Game Programming in Python](https://realpython.com/pygame-a-primer/)
