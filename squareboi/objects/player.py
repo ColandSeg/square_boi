@@ -1,6 +1,6 @@
-from objects.game_object import GameObject
-from utils import load_png
 from pygame.math import Vector2
+from objects.game_object import GameObject
+from utils import load_png, clamp
 from pygame.locals import (
     K_w,
     K_a,
@@ -9,23 +9,27 @@ from pygame.locals import (
 )
 
 class Player(GameObject):
-    def __init__(self, pos: tuple[int, int], speed):
+    def __init__(self, pos: tuple[int, int], speed: int):
         self.sprites = {
             # default
-            "front": load_png("player/player_front"),
+            "front":     load_png("player/player_front"),
             # straights
-            "up":    load_png("player/player_up"),
-            "left":  load_png("player/player_left"),
-            "down":  load_png("player/player_down"),
-            "right": load_png("player/player_right")
+            "up":        load_png("player/player_up"),
+            "left":      load_png("player/player_left"),
+            "down":      load_png("player/player_down"),
+            "right":     load_png("player/player_right"),
             # diagonals
-            # TODO: add diagonal sprites
+            "northeast": load_png("player/player_NE"),
+            "northwest": load_png("player/player_NW"),
+            "southeast": load_png("player/player_SE"),
+            "southwest": load_png("player/player_SW")
         }
         
         super().__init__(self.sprites["front"], pos, speed)
 
-    def update(self, keys: dict, screen):
+    def update(self, keys: dict, width: int, height: int):
         self._move(keys)
+        self._stay_on_screen(width, height)
         self._change_sprite()
 
     def _move(self, keys: dict):
@@ -44,6 +48,10 @@ class Player(GameObject):
             self.direction.x * self.speed,
             self.direction.y * self.speed
         )
+
+    def _stay_on_screen(self, width: int, height: int):
+        self.rect.x = clamp(self.rect.x, 0, width - self.rect.width)
+        self.rect.y = clamp(self.rect.y, 0, height - self.rect.height)
     
     def _change_sprite(self):
         # Default sprite if `direction` = 0
@@ -58,3 +66,12 @@ class Player(GameObject):
             self.surf = self.sprites["down"]
         elif self.direction == Vector2(1, 0):
             self.surf = self.sprites["right"]
+        # Change to diagonal sprites
+        elif self.direction == Vector2(1, -1):
+            self.surf = self.sprites["northeast"]
+        elif self.direction == Vector2(-1, -1):
+            self.surf = self.sprites["northwest"]
+        elif self.direction == Vector2(1, 1):
+            self.surf = self.sprites["southeast"]
+        elif self.direction == Vector2(-1, 1):
+            self.surf = self.sprites["southwest"]

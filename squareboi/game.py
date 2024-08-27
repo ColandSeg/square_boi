@@ -1,5 +1,6 @@
 import pygame as pyg
-from objects.player import Player
+from pygame.sprite import Group
+from level import Level
 from utils import load_png
 from pygame.locals import (
     QUIT,
@@ -25,9 +26,15 @@ class Game:
         self.clock = pyg.time.Clock()
         self.running = True
 
-        # Surfaces and objects
-        self.background = load_png("space/bg_space_v1")
-        self.player = Player((0, 0), 4)
+        # Loading level
+        self.level = Level(1)
+        self.background = self.level.load_background()
+        self.player = self.level.load_player()
+        self.walls = self.level.load_walls()
+
+        self.all_sprites = Group()
+        self.all_sprites.add(self.player)
+        self.all_sprites.add(self.walls)
 
     def run_game(self):
         while self.running:
@@ -51,7 +58,7 @@ class Game:
 
         # Input
         keys = pyg.key.get_pressed()
-        self.player.update(keys)
+        self.player.update(keys, SCREEN_WIDTH, SCREEN_HEIGHT)
         
     def _do_output(self):
         if not self.running:
@@ -59,7 +66,8 @@ class Game:
         
         self.screen.blit(self.background, (0, 0))
 
-        self.player.draw(self.screen)
+        for sprite in self.all_sprites:
+            sprite.draw(self.screen)
         
         pyg.display.flip()
         self.clock.tick(FPS)
