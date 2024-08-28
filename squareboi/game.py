@@ -32,6 +32,9 @@ class Game:
         self.player = self.level.load_player()
         self.walls = self.level.load_walls()
 
+        self.solids = Group()
+        self.solids.add(self.walls)
+
         self.all_sprites = Group()
         self.all_sprites.add(self.player)
         self.all_sprites.add(self.walls)
@@ -58,7 +61,7 @@ class Game:
 
         # Input
         keys = pyg.key.get_pressed()
-        self.player.update(keys, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.player.update(keys, SCREEN_WIDTH, SCREEN_HEIGHT, self.solids)
         
     def _do_output(self):
         if not self.running:
