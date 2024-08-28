@@ -1,4 +1,3 @@
-import pygame as pyg
 from pygame.math import Vector2
 from pygame.sprite import Group
 from objects.game_object import GameObject
@@ -46,28 +45,17 @@ class Player(GameObject):
         if keys[K_d]:
             self.direction.x += 1
 
-        # if self.direction.length() > 0:
-        #     if not pyg.sprite.spritecollideany(self, solids):
-        #         self.rect.move_ip(
-        #             self.direction.x * self.speed,
-        #             self.direction.y * self.speed
-        #         )
-
-        #     else: # Handle collisions with solids
-        #         future_rect_x = self.rect.move(self.direction.x * self.speed, 0)
-        #         future_rect_y = self.rect.move(0, self.direction.y * self.speed)
-        #         if not any(future_rect_x.colliderect(solid.rect) for solid in solids):
-        #             self.rect.move_ip(self.direction.x * self.speed, 0)
-        #         if not any(future_rect_y.colliderect(solid.rect) for solid in solids):
-        #             self.rect.move_ip(0, self.direction.y * self.speed)
-
+        # NOTE: the player can get stuck in the corner of a wall when moving diagonally.
+        # Other than that, this code works for now.
+        # TODO: find a way such that the player can't get stuck inside a wall and can
+        # freely move diagonally
         if self.direction.length() > 0:
-            # No idea how this code works, but it works for now
             new_rect = self.rect.move(self.direction.x * self.speed, self.direction.y * self.speed)
 
             if not any(new_rect.colliderect(obj.rect) for obj in solids):
                 self.rect = new_rect
-            else:
+
+            else: # Handle collisions with solids
                 temp_rect_x = self.rect.move(self.direction.x * self.speed, 0)
                 temp_rect_y = self.rect.move(0, self.direction.y * self.speed)
                 if not any(temp_rect_x.colliderect(obj.rect) for obj in solids):
