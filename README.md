@@ -25,3 +25,6 @@ A list of resources used in the development of this project.
 
 ### Real Python
 - Jon Fincher's [PyGame: A Primer on Game Programming in Python](https://realpython.com/pygame-a-primer/)
+
+### Assets
+- SubspaceAudio's [512 Sound Effects (8-bit style)](https://opengameart.org/content/512-sound-effects-8-bit-style)

@@ -1,5 +1,5 @@
 from pygame.math import Vector2
-from pygame.sprite import Group
+from pygame.sprite import Group, spritecollide
 from objects.game_object import GameObject
 from utils import load_png, clamp
 from pygame.locals import (
@@ -34,8 +34,10 @@ class Player(GameObject):
         self._change_sprite()
 
     def _move(self, keys: dict, solids: Group):
+        # Reset direction
         self.direction *= 0
 
+        # Change direction
         if keys[K_w]:
             self.direction.y -= 1
         if keys[K_a]:
@@ -45,24 +47,23 @@ class Player(GameObject):
         if keys[K_d]:
             self.direction.x += 1
 
-        # NOTE: the player can get stuck in the corner of a wall when moving diagonally.
-        # Other than that, this code works for now.
-        # TODO: find a way such that the player can't get stuck inside a wall and can
-        # freely move diagonally
-        if self.direction.length() > 0:
-            new_rect = self.rect.move(self.direction.x * self.speed, self.direction.y * self.speed)
+        # x-axis
+        self.rect.x += self.direction.x * self.speed
+        collided_solids = spritecollide(self, solids, False)
+        for solid in collided_solids:
+            if self.direction.x > 0:  # Moving right
+                self.rect.right = solid.rect.left
+            elif self.direction.x < 0:  # Moving left
+                self.rect.left = solid.rect.right
 
-            if not any(new_rect.colliderect(obj.rect) for obj in solids):
-                self.rect = new_rect
-
-            else: # Handle collisions with solids
-                temp_rect_x = self.rect.move(self.direction.x * self.speed, 0)
-                temp_rect_y = self.rect.move(0, self.direction.y * self.speed)
-                if not any(temp_rect_x.colliderect(obj.rect) for obj in solids):
-                    self.rect.x += self.direction.x * self.speed
-                if not any(temp_rect_y.colliderect(obj.rect) for obj in solids):
-                    self.rect.y += self.direction.y * self.speed
-            
+        # y-axis
+        self.rect.y += self.direction.y * self.speed
+        collided_solids = spritecollide(self, solids, False)
+        for solid in collided_solids:
+            if self.direction.y > 0:  # Moving down
+                self.rect.bottom = solid.rect.top
+            elif self.direction.y < 0:  # Moving up
+                self.rect.top = solid.rect.bottom
 
     def _stay_on_screen(self, width: int, height: int):
         self.rect.x = clamp(self.rect.x, 0, width - self.rect.width)

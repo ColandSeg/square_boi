@@ -10,7 +10,7 @@ from pygame.locals import (
 
 SCREEN_WIDTH = 960
 SCREEN_HEIGHT = 480
-FPS = 60
+FPS = 30
 
 class Game:
     def __init__(self):
@@ -28,16 +28,23 @@ class Game:
 
         # Loading level
         self.level = Level(1)
+
         self.background = self.level.load_background()
         self.player = self.level.load_player()
         self.walls = self.level.load_walls()
+        self.locks = self.level.load_lock_system_parts("lock")
+        self.keys = self.level.load_lock_system_parts("key")
 
         self.solids = Group()
         self.solids.add(self.walls)
+        self.solids.add(self.locks)
 
+        # For drawing only
         self.all_sprites = Group()
         self.all_sprites.add(self.player)
         self.all_sprites.add(self.walls)
+        self.all_sprites.add(self.locks)
+        self.all_sprites.add(self.keys)
 
     def run_game(self):
         while self.running:
@@ -52,6 +59,7 @@ class Game:
             if event.type == QUIT or (
                 event.type == KEYDOWN and event.key == K_ESCAPE
             ):
+                # NOTE: temporary. Pressing escape should pause the game.
                 self.running = False
                 return
         
@@ -62,6 +70,13 @@ class Game:
         # Input
         keys = pyg.key.get_pressed()
         self.player.update(keys, SCREEN_WIDTH, SCREEN_HEIGHT, self.solids)
+
+        # Lock systems
+        collided_keys = pyg.sprite.spritecollide(self.player, self.keys, True)
+        for key in collided_keys:
+            for lock in self.locks:
+                if key.system_id == lock.system_id:
+                    lock.open_lock()
         
     def _do_output(self):
         if not self.running:
