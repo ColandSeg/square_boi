@@ -34,10 +34,12 @@ class Game:
         self.walls = self.level.load_walls()
         self.locks = self.level.load_lock_system_parts("lock")
         self.keys = self.level.load_lock_system_parts("key")
+        self.fences = self.level.load_fences()
 
         self.solids = Group()
         self.solids.add(self.walls)
         self.solids.add(self.locks)
+        self.solids.add(self.fences)
 
         # For drawing only
         self.all_sprites = Group()
@@ -45,6 +47,7 @@ class Game:
         self.all_sprites.add(self.walls)
         self.all_sprites.add(self.locks)
         self.all_sprites.add(self.keys)
+        self.all_sprites.add(self.fences)
 
     def run_game(self):
         while self.running:

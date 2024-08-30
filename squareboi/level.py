@@ -30,6 +30,8 @@ class Level:
                     self.txt_locks = line.split("|")
                 case "k": # keys
                     self.txt_keys = line.split("|")
+                case "f": # wire fences
+                    self.txt_fences = line.split("|")
     
     def load_background(self) -> Surface:
         theme = THEMES[int(self.txt_theme[1])]
@@ -57,22 +59,6 @@ class Level:
             walls.add(Wall(pos, theme))
 
         return walls
-    
-    # def load_locks(self) -> Group:
-    #     locks = Group()
-        
-    #     self.txt_locks.pop(0)
-    #     for text in self.txt_locks:
-    #         split_text = text.split(";")
-
-    #         txt_pos = split_text[0].split(",")
-    #         pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
-    #         lock_id = int(split_text[1])
-    #         color = split_text[2]
-
-    #         locks.add(LockSystem(pos, lock_id, color, "lock"))
-
-    #     return locks
 
     def load_lock_system_parts(self, part: str) -> Group:
         part_group = Group()
@@ -95,3 +81,15 @@ class Level:
             part_group.add(LockSystem(pos, part_id, color, part))
 
         return part_group
+    
+    def load_fences(self):
+        fences = Group()
+
+        self.txt_fences.pop(0)
+        for text in self.txt_fences:
+            txt_pos = text.split(",")
+            pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
+
+            fences.add(Wall(pos, "fence"))
+
+        return fences
