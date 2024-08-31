@@ -34,12 +34,19 @@ class Game:
         self.walls = self.level.load_walls()
         self.locks = self.level.load_lock_system_parts("lock")
         self.keys = self.level.load_lock_system_parts("key")
+        self.saws = self.level.load_saws()
         self.fences = self.level.load_fences()
 
+        # Solids for the player
         self.solids = Group()
         self.solids.add(self.walls)
         self.solids.add(self.locks)
         self.solids.add(self.fences)
+
+        # Solids for obstacles
+        self.obstacle_solids = Group()
+        self.obstacle_solids.add(self.walls)
+        self.obstacle_solids.add(self.locks)
 
         # For drawing only
         self.all_sprites = Group()
@@ -47,6 +54,7 @@ class Game:
         self.all_sprites.add(self.walls)
         self.all_sprites.add(self.locks)
         self.all_sprites.add(self.keys)
+        self.all_sprites.add(self.saws)
         self.all_sprites.add(self.fences)
 
     def run_game(self):
@@ -71,8 +79,8 @@ class Game:
             return
 
         # Input
-        keys = pyg.key.get_pressed()
-        self.player.update(keys, SCREEN_WIDTH, SCREEN_HEIGHT, self.solids)
+        pressed_keys = pyg.key.get_pressed()
+        self.player.update(pressed_keys, SCREEN_WIDTH, SCREEN_HEIGHT, self.solids)
 
         # Lock systems
         collided_keys = pyg.sprite.spritecollide(self.player, self.keys, True)
@@ -80,6 +88,8 @@ class Game:
             for lock in self.locks:
                 if key.system_id == lock.system_id:
                     lock.open_lock()
+
+        self.saws.update(SCREEN_WIDTH, SCREEN_HEIGHT, self.obstacle_solids)
         
     def _do_output(self):
         if not self.running:

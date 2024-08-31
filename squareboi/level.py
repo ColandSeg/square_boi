@@ -2,6 +2,7 @@ from pygame import Surface
 from pygame.sprite import Group
 from objects.player import Player
 from objects.wall import Wall
+from objects.saw import Saw
 from objects.lock_system import LockSystem
 from utils import load_png
 
@@ -30,6 +31,8 @@ class Level:
                     self.txt_locks = line.split("|")
                 case "k": # keys
                     self.txt_keys = line.split("|")
+                case "s":
+                    self.txt_saws = line.split("|")
                 case "f": # wire fences
                     self.txt_fences = line.split("|")
     
@@ -81,6 +84,21 @@ class Level:
             part_group.add(LockSystem(pos, part_id, color, part))
 
         return part_group
+    
+    def load_saws(self):
+        saws = Group()
+
+        self.txt_saws.pop(0)
+        for text in self.txt_saws:
+            split_text = text.split(";")
+
+            txt_pos = split_text[0].split(",")
+            pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
+            facing = split_text[1]
+
+            saws.add(Saw(pos, facing))
+
+        return saws
     
     def load_fences(self):
         fences = Group()
