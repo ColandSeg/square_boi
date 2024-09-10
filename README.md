@@ -23,8 +23,9 @@ A list of resources used in the development of this project.
 - GitHub's [Basic writing and formatting syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 - [Make a README](https://www.makeareadme.com/)
 
-### Real Python
+### Pygame
 - Jon Fincher's [PyGame: A Primer on Game Programming in Python](https://realpython.com/pygame-a-primer/)
+- Pawel Fertyk's [Build an Asteroids Game With Python and Pygame](https://realpython.com/asteroids-game-python/)
 
 ### Assets
 - SubspaceAudio's [512 Sound Effects (8-bit style)](https://opengameart.org/content/512-sound-effects-8-bit-style)
