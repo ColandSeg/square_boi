@@ -35,12 +35,14 @@ class Game:
         self.locks = self.level.load_lock_system_parts("lock")
         self.keys = self.level.load_lock_system_parts("key")
         self.saws = self.level.load_saws()
+        self.cannons = self.level.load_cannons()
         self.fences = self.level.load_fences()
 
         # Solids for the player
         self.solids = Group()
         self.solids.add(self.walls)
         self.solids.add(self.locks)
+        self.solids.add(self.cannons)
         self.solids.add(self.fences)
 
         # Solids for obstacles
@@ -55,6 +57,7 @@ class Game:
         self.all_sprites.add(self.locks)
         self.all_sprites.add(self.keys)
         self.all_sprites.add(self.saws)
+        self.all_sprites.add(self.cannons)
         self.all_sprites.add(self.fences)
 
     def run_game(self):

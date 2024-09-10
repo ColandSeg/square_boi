@@ -2,8 +2,9 @@ from pygame import Surface
 from pygame.sprite import Group
 from objects.player import Player
 from objects.wall import Wall
-from objects.saw import Saw
 from objects.lock_system import LockSystem
+from objects.saw import Saw
+from objects.cannon import Cannon
 from utils import load_png
 
 CELL_LENGTH = 32
@@ -33,6 +34,8 @@ class Level:
                     self.txt_keys = line.split("|")
                 case "s":
                     self.txt_saws = line.split("|")
+                case "c":
+                    self.txt_cannons = line.split("|")
                 case "f": # wire fences
                     self.txt_fences = line.split("|")
     
@@ -99,6 +102,21 @@ class Level:
             saws.add(Saw(pos, facing))
 
         return saws
+    
+    def load_cannons(self):
+        cannons = Group()
+
+        self.txt_cannons.pop(0)
+        for text in self.txt_cannons:
+            split_text = text.split(";")
+
+            txt_pos = split_text[0].split(",")
+            pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
+            facing = split_text[1]
+
+            cannons.add(Cannon(pos, facing))
+
+        return cannons
     
     def load_fences(self):
         fences = Group()
