@@ -2,46 +2,39 @@ from pygame import Surface
 from pygame.image import load
 from pygame.mixer import Sound
 
-def load_img(file_path: str, alpha=False) -> Surface:
-    """Loads an image file and returns a pygame Surface object.
-
+def load_png(file_path: str, with_alpha=False) -> Surface:
+    """Loads a PNG file and returns a pygame Surface object.
+    
     Args:
-        file_path (str): the relative path of an image within 'assets/sprites/'
-        alpha (bool): whether to include transparent pixels (defaults to False)
-    
+        file_path (str): the relative path of a PNG within 'assets/sprites/'
+        is_alpha (bool): whether to include transparent pixels (default is False)
     Returns:
-        Surface: an image loaded as a pygame Surface
+        Surface: a PNG loaded as a pygame Surface
     """
-
-    surface = load(f"assets/sprites/{file_path}")
-    surface = surface.convert_alpha() if alpha else surface.convert()
+    surface = load(f"assets/sprites/{file_path}.png")
+    surface = surface.convert_alpha() if with_alpha else surface.convert()
     return surface
-    
-def load_audio(file_path: str) -> Sound:
-    """Loads an audio file and returns a pygame Sound object
+
+def load_sound(file_path: str):
+    """Loads an audio file and returns a pygame Sound object.
     
     Args:
         file_path (str): the relative path of an audio file within 'assets/audio/'
-    
     Returns:
-        Sound: an audio file loaded as a pygame Sound object
+        Sound: an audio file loaded as a pygame Sound
     """
-
     sound = Sound(f"assets/audio/{file_path}")
-    sound.set_volume(0.2)
     return sound
 
-def clamp(value: int, min_value: int, max_value: int) -> int:
-    """Limits, or clamps, a value between a minimum and a maximum value.
+def clamp(value: int, min_value: int, max_value: int):
+    """Limits (or clamps) a value between a min and max value.
     
     Args:
-        value (int): the value to be clamped
-        min_value (int): the minimum allowed value
-        min_value (int): the maximum allowed value
-    
+        value (int): the value to clamp
+        min_value (int): minimum allowed value
+        max_value (int): maximum allowed value
     Returns:
-        int: The clamped value
+        int: the clamped value
     """
-    
     clamped_value = max(min_value, min(value, max_value))
     return clamped_value

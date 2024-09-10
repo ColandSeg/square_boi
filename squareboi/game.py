@@ -1,99 +1,107 @@
 import pygame as pyg
+from pygame.sprite import Group
 from level import Level
-from utils import load_img
+from utils import load_png
+from pygame.locals import (
+    QUIT,
+    KEYDOWN,
+    K_ESCAPE
+)
 
 SCREEN_WIDTH = 960
 SCREEN_HEIGHT = 480
-FPS = 60
+FPS = 30
 
 class Game:
     def __init__(self):
-        # Initialization
+        # Initialize pygame
         pyg.init()
-        
-        # Window
-        pyg.display.set_caption("Square Boi")
-        self.screen = pyg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pyg.display.set_icon(load_img("icon.png"))
-        self.clock = pyg.time.Clock()
-        self.active = True
 
-        # Loading objects
+        # Window setup
+        self.screen = pyg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pyg.display.set_caption("Square BOI")
+        pyg.display.set_icon(load_png("icon"))
+
+        # Game tools
+        self.clock = pyg.time.Clock()
+        self.running = True
+
+        # Loading level
         self.level = Level(1)
 
         self.background = self.level.load_background()
         self.player = self.level.load_player()
         self.walls = self.level.load_walls()
-        self.cannons = self.level.load_cannons()
-        self.shells = []
+        self.locks = self.level.load_lock_system_parts("lock")
+        self.keys = self.level.load_lock_system_parts("key")
         self.saws = self.level.load_saws()
-        self.electric_currents = self.level.load_electric_currents()
+        self.cannons = self.level.load_cannons()
+        self.fences = self.level.load_fences()
+
+        # Solids for the player
+        self.solids = Group()
+        self.solids.add(self.walls)
+        self.solids.add(self.locks)
+        self.solids.add(self.cannons)
+        self.solids.add(self.fences)
+
+        # Solids for obstacles
+        self.obstacle_solids = Group()
+        self.obstacle_solids.add(self.walls)
+        self.obstacle_solids.add(self.locks)
+
+        # For drawing only
+        self.all_sprites = Group()
+        self.all_sprites.add(self.player)
+        self.all_sprites.add(self.walls)
+        self.all_sprites.add(self.locks)
+        self.all_sprites.add(self.keys)
+        self.all_sprites.add(self.saws)
+        self.all_sprites.add(self.cannons)
+        self.all_sprites.add(self.fences)
 
     def run_game(self):
-        # Game loop
-        while self.active:
-            self._get_input()
+        while self.running:
+            self._do_events()
             self._do_logic()
             self._do_output()
         pyg.quit()
-
-    def _get_input(self):
-        # Event loop
+    
+    def _do_events(self):
         for event in pyg.event.get():
-            # Quit condition (Alt + f4 or Esc)
-            if event.type == pyg.QUIT or (
-                event.type == pyg.KEYDOWN and event.key == pyg.K_ESCAPE
+            # Quit condition
+            if event.type == QUIT or (
+                event.type == KEYDOWN and event.key == K_ESCAPE
             ):
-                # Quit the game
-                self.active = False
+                # NOTE: temporary. Pressing escape should pause the game.
+                self.running = False
                 return
-            
-            # Cannon firing events
-            for cannon in self.cannons:
-                if event.type == cannon.event_type:
-                    self.shells.append(cannon.fire())
         
-        # Player movement
-        self.player.move(self.walls, self.cannons)
-
     def _do_logic(self):
-        if not self.active:
+        if not self.running:
             return
 
-        self.player.change_sprite()
-        self.player.stay_on_screen(SCREEN_WIDTH, SCREEN_HEIGHT)
+        # Input
+        pressed_keys = pyg.key.get_pressed()
+        self.player.update(pressed_keys, SCREEN_WIDTH, SCREEN_HEIGHT, self.solids)
 
-        for shell in self.shells[:]:
-            if shell.crash_with(self.walls, SCREEN_WIDTH, SCREEN_HEIGHT):
-                self.shells.remove(shell)
-            else:
-                shell.move()
+        # Lock systems
+        collided_keys = pyg.sprite.spritecollide(self.player, self.keys, True)
+        for key in collided_keys:
+            for lock in self.locks:
+                if key.system_id == lock.system_id:
+                    lock.open_lock()
 
-        for saw in self.saws:
-            saw.move(self.walls, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.saws.update(SCREEN_WIDTH, SCREEN_HEIGHT, self.obstacle_solids)
         
-        if (
-            self.player.rect.collidelist(self.shells) != -1 or \
-            self.player.rect.collidelist(self.saws) != -1 or \
-            self.player.rect.collidelist(self.electric_currents) != -1
-        ):
-            self.active = False
-            return
-
     def _do_output(self):
-        if not self.active:
+        if not self.running:
             return
-
+        
         self.screen.blit(self.background, (0, 0))
 
-        # Drawing
-        self.player.draw(self.screen)
-        for object in (
-            self.walls + self.cannons + \
-            self.shells + self.saws + \
-            self.electric_currents
-        ):
-            object.draw(self.screen)
-
+        for sprite in self.all_sprites:
+            sprite.draw(self.screen)
+        
         pyg.display.flip()
         self.clock.tick(FPS)

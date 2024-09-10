@@ -1,92 +1,93 @@
-import pygame as pyg
+from pygame.math import Vector2
+from pygame.sprite import Group, spritecollide
 from objects.game_object import GameObject
-from objects.cannon import Cannon
-from objects.wall import Wall
-from utils import load_img, clamp
+from utils import load_png, clamp
+from pygame.locals import (
+    K_w,
+    K_a,
+    K_s,
+    K_d,
+)
 
 class Player(GameObject):
     def __init__(self, pos: tuple[int, int], speed: int):
         self.sprites = {
             # default
-            "front":        load_img("player/player_front.png"),
-            # straight
-            "up":           load_img("player/player_up.png"),
-            "left":         load_img("player/player_left.png"),
-            "down":         load_img("player/player_down.png"),
-            "right":        load_img("player/player_right.png"),
+            "front":     load_png("player/player_front"),
+            # straights
+            "up":        load_png("player/player_up"),
+            "left":      load_png("player/player_left"),
+            "down":      load_png("player/player_down"),
+            "right":     load_png("player/player_right"),
             # diagonals
-            "northeast":    load_img("player/player_NE.png"),
-            "northwest":    load_img("player/player_NW.png"),
-            "southeast":    load_img("player/player_SE.png"),
-            "southwest":    load_img("player/player_SW.png")
+            "northeast": load_png("player/player_NE"),
+            "northwest": load_png("player/player_NW"),
+            "southeast": load_png("player/player_SE"),
+            "southwest": load_png("player/player_SW")
         }
-
-        super().__init__(self.sprites["front"], pos, speed)
         
-    def move(self, walls: list[Wall], cannons: list[Cannon]):
-        # Perhaps the code for `move` is getting too cluttered...
-        # TODO: Divide code for `move` into differente methods:
-        #   - Moving
-        #   - Collision handling
-        keys = pyg.key.get_pressed()
-        self.direction *= 0 # reset direction
+        super().__init__(self.sprites["front"], pos, speed)
 
-        if keys[pyg.K_w]:
+    def update(self, keys: dict, width: int, height: int, solids: Group):
+        self._move(keys, solids)
+        self._stay_on_screen(width, height)
+        self._change_sprite()
+
+    def _move(self, keys: dict, solids: Group):
+        # Reset direction
+        self.direction *= 0
+
+        # Change direction
+        if keys[K_w]:
             self.direction.y -= 1
-        if keys[pyg.K_a]:
+        if keys[K_a]:
             self.direction.x -= 1
-        if keys[pyg.K_s]:
+        if keys[K_s]:
             self.direction.y += 1
-        if keys[pyg.K_d]:
+        if keys[K_d]:
             self.direction.x += 1
 
-        if self.direction.length() > 0:
-            # No idea how this code works, but it works for now
-            new_rect = self.rect.move(self.direction.x * self.speed, self.direction.y * self.speed)
+        # x-axis
+        self.rect.x += self.direction.x * self.speed
+        collided_solids = spritecollide(self, solids, False)
+        for solid in collided_solids:
+            if self.direction.x > 0:  # Moving right
+                self.rect.right = solid.rect.left
+            elif self.direction.x < 0:  # Moving left
+                self.rect.left = solid.rect.right
 
-            if not any(new_rect.colliderect(obj.rect) for obj in walls + cannons):
-                self.rect = new_rect
-            else:
-                temp_rect_x = self.rect.move(self.direction.x * self.speed, 0)
-                temp_rect_y = self.rect.move(0, self.direction.y * self.speed)
-                if not any(temp_rect_x.colliderect(obj.rect) for obj in walls + cannons):
-                    self.rect.x += self.direction.x * self.speed
-                if not any(temp_rect_y.colliderect(obj.rect) for obj in walls + cannons):
-                    self.rect.y += self.direction.y * self.speed
-    
-    def change_sprite(self):
-        self.surf = self.sprites["front"] # default sprite
+        # y-axis
+        self.rect.y += self.direction.y * self.speed
+        collided_solids = spritecollide(self, solids, False)
+        for solid in collided_solids:
+            if self.direction.y > 0:  # Moving down
+                self.rect.bottom = solid.rect.top
+            elif self.direction.y < 0:  # Moving up
+                self.rect.top = solid.rect.bottom
 
-        # straight sprites
-        if self.direction == (1, 0):
-            self.surf = self.sprites["right"]
-        if self.direction == (0, 1):
-            self.surf = self.sprites["down"]
-        if self.direction == (-1, 0):
-            self.surf = self.sprites["left"]
-        if self.direction == (0, -1):
-            self.surf = self.sprites["up"]
-        
-        # diagonal sprites
-        if self.direction == (1, 1):
-            self.surf = self.sprites["southeast"]
-        if self.direction == (-1, 1):
-            self.surf = self.sprites["southwest"]
-        if self.direction == (1, -1):
-            self.surf = self.sprites["northeast"]
-        if self.direction == (-1, -1):
-            self.surf = self.sprites["northwest"]
-
-    def stay_on_screen(self, width: int, height: int):
+    def _stay_on_screen(self, width: int, height: int):
         self.rect.x = clamp(self.rect.x, 0, width - self.rect.width)
         self.rect.y = clamp(self.rect.y, 0, height - self.rect.height)
+        
+    def _change_sprite(self):
+        # Default sprite if `direction` = 0
+        self.surf = self.sprites["front"]
 
-    def bump_with(self, objects: list[GameObject]):
-        # TODO: add method in which the player bumps with an object
-        # Collisions with said objects act like walls
-        pass
-
-    def crash_with(self, objects: list[GameObject]):
-        # TODO: add method in which the player crashes with an object
-        # Collisions with said objects act like Game Overs
-        pass
+        # Change to straight sprites
+        if self.direction == Vector2(0, -1):
+            self.surf = self.sprites["up"]
+        elif self.direction == Vector2(-1, 0):
+            self.surf = self.sprites["left"]
+        elif self.direction == Vector2(0, 1):
+            self.surf = self.sprites["down"]
+        elif self.direction == Vector2(1, 0):
+            self.surf = self.sprites["right"]
+        # Change to diagonal sprites
+        elif self.direction == Vector2(1, -1):
+            self.surf = self.sprites["northeast"]
+        elif self.direction == Vector2(-1, -1):
+            self.surf = self.sprites["northwest"]
+        elif self.direction == Vector2(1, 1):
+            self.surf = self.sprites["southeast"]
+        elif self.direction == Vector2(-1, 1):
+            self.surf = self.sprites["southwest"]

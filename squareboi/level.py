@@ -1,103 +1,131 @@
 from pygame import Surface
+from pygame.sprite import Group
 from objects.player import Player
 from objects.wall import Wall
-from objects.cannon import Cannon
+from objects.lock_system import LockSystem
 from objects.saw import Saw
-from objects.electric_current import ElectricCurrent
-from utils import load_img
+from objects.cannon import Cannon
+from utils import load_png
 
+CELL_LENGTH = 32
 THEMES = {
-    1: "space",
-    2: "grassland",
-    3: "caves"
+    1: "space"
 }
-CELL_LENGTH = 48
 
 class Level:
     def __init__(self, lvl_num: int):
         self.lvl_num = lvl_num
 
+        # Read level file
         with open(f"data/lvl_{self.lvl_num}.txt", "r") as lvl_file:
             self.txt_layout = [line.strip() for line in lvl_file]
 
-        self.txt_cannons = []
-        self.txt_saws = []
-        self.txt_electrics = []
-        
         for line in self.txt_layout:
             match line[0]:
-                case "t": # theme
+                case "t": # level theme
                     self.txt_theme = line.split("|")
                 case "p": # player
                     self.txt_player = line.split("|")
                 case "w": # walls
                     self.txt_walls = line.split("|")
-                case "c": # cannons
-                    self.txt_cannons.append(line.split("|"))
-                case "s": # saws
-                    self.txt_saws.append(line.split("|"))
-                case "e": # electric currents
-                    self.txt_electrics.append(line.split("|"))
-
+                case "l": # locks
+                    self.txt_locks = line.split("|")
+                case "k": # keys
+                    self.txt_keys = line.split("|")
+                case "s":
+                    self.txt_saws = line.split("|")
+                case "c":
+                    self.txt_cannons = line.split("|")
+                case "f": # wire fences
+                    self.txt_fences = line.split("|")
+    
     def load_background(self) -> Surface:
         theme = THEMES[int(self.txt_theme[1])]
-        bg_path = f"{theme}/bg_{theme}.png"
-        background = load_img(bg_path)
+        background = load_png(f"{theme}/bg_{theme}")
 
         return background
-    
-    def load_player(self) -> Player:    
+
+    def load_player(self) -> Player:
         txt_pos = self.txt_player[1].split(",")
         pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
-        speed = int(self.txt_player[2])
+        speed = float(self.txt_player[2])
         player = Player(pos, speed)
 
         return player
     
-    def load_walls(self) -> list[Wall]:
-        walls = []
-        
+    def load_walls(self) -> Group:
+        walls = Group()
+        theme = THEMES[int(self.txt_theme[1])]
+
         self.txt_walls.pop(0)
-        for line in self.txt_walls:
-            txt_pos = line.split(",")
+        for text in self.txt_walls:
+            txt_pos = text.split(",")
             pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
 
-            walls.append(Wall(pos, THEMES[int(self.txt_theme[1])]))
-        
+            walls.add(Wall(pos, theme))
+
         return walls
-    
-    def load_cannons(self) -> list[Cannon]:
-        cannons = []
 
-        for txt_cannon in self.txt_cannons:
-            txt_pos = txt_cannon[1].split(",")
+    def load_lock_system_parts(self, part: str) -> Group:
+        part_group = Group()
+
+        match part:
+            case "lock":
+                txt_parts = self.txt_locks
+            case "key":
+                txt_parts = self.txt_keys
+
+        txt_parts.pop(0)
+        for text in txt_parts:
+            split_text = text.split(";")
+
+            txt_pos = split_text[0].split(",")
             pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
-            facing = txt_cannon[2]
+            part_id = int(split_text[1])
+            color = split_text[2]
 
-            cannons.append(Cannon(pos, facing))
-        
-        return cannons
+            part_group.add(LockSystem(pos, part_id, color, part))
+
+        return part_group
     
-    def load_saws(self) -> list[Saw]:
-        saws = []
+    def load_saws(self):
+        saws = Group()
 
-        for txt_saw in self.txt_saws:
-            txt_pos = txt_saw[1].split(",")
+        self.txt_saws.pop(0)
+        for text in self.txt_saws:
+            split_text = text.split(";")
+
+            txt_pos = split_text[0].split(",")
             pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
-            facing = txt_saw[2]
+            facing = split_text[1]
 
-            saws.append(Saw(pos, facing))
-        
+            saws.add(Saw(pos, facing))
+
         return saws
     
-    def load_electric_currents(self) -> list[ElectricCurrent]:
-        electrics = []
+    def load_cannons(self):
+        cannons = Group()
 
-        for txt_electric in self.txt_electrics:
-            txt_pos = txt_electric[1].split(",")
+        self.txt_cannons.pop(0)
+        for text in self.txt_cannons:
+            split_text = text.split(";")
+
+            txt_pos = split_text[0].split(",")
             pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
-            facing = txt_electric[2]
+            facing = split_text[1]
 
-            electrics.append(ElectricCurrent(pos, facing))
-        
-        return electrics
+            cannons.add(Cannon(pos, facing))
+
+        return cannons
+    
+    def load_fences(self):
+        fences = Group()
+
+        self.txt_fences.pop(0)
+        for text in self.txt_fences:
+            txt_pos = text.split(",")
+            pos = tuple(int(num) * CELL_LENGTH for num in txt_pos)
+
+            fences.add(Wall(pos, "fence"))
+
+        return fences
